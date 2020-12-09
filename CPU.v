@@ -13,24 +13,12 @@ input               start_i;
 wire [31:0] inst,addr;
 wire zero;
 
-Control Control(
-    .Op_i       (inst[6:0]),
-	.RegWrite_o (Registers.RegWrite_i),
-	.MemtoReg_o (),
-	.MemRead_o  (),
-	.MemWrite_o (),
-	.ALUOp_o    (ALU_Control.ALUOp_i),
-	.ALUSrc_o   (MUX_ALUSrc.select_i),
-    .Branch_o   (),
+MUX32 MUX_PCSrc(
+    .data1_i (),
+    .data2_i (),    
+    .select_i (),  
+    .data_o ()
 );
-
-
-Adder Add_PC(
-    .data1_in   (addr),
-    .data2_in   (32'd4),
-    .data_o     (PC.pc_i)
-);
-
 
 PC PC(
     .clk_i      (clk_i),
@@ -46,6 +34,29 @@ Instruction_Memory Instruction_Memory(
     .inst_o     (inst)
 );
 
+Adder Add_PC(
+    .data1_in   (addr),
+    .data2_in   (32'd4),
+    .data_o     (MUX_PCSrc.data1_i)
+);
+
+IFID IFID(
+    .clk_i 	    (clk_i),
+    .start_i 	(start_i),
+    .addr_i 	(addpc_out),
+    .instr_i 	(Instruction_Memory.instr_o),
+    .Flush_i	(branch | jump),
+    .Stall_i    (HazardDetection_Unit.Stall_o),
+    .addr_o	    (IFIDaddr_o),
+    .inst_o	    (inst)
+);
+
+Adder Add_Branch_addr(
+    .data1_in (IFIDaddr_o), 
+    .data2_in (Sign_Extend.data_o << 1),
+    .data_o (MUX_PCSrc.data2_i)
+);
+
 Registers Registers(
     .clk_i      (clk_i),
     .RS1addr_i   (inst[19:15]),
@@ -57,6 +68,25 @@ Registers Registers(
     .RS2data_o   (MUX_ALUSrc.data1_i) 
 );
 
+Control Control(
+    .Op_i       (inst[6:0]),
+	.RegWrite_o (Registers.RegWrite_i),
+	.MemtoReg_o (),
+	.MemRead_o  (),
+	.MemWrite_o (),
+	.ALUOp_o    (ALU_Control.ALUOp_i),
+	.ALUSrc_o   (MUX_ALUSrc.select_i),
+    .Branch_o   (),
+);
+
+
+Sign_Extend Sign_Extend(
+    .data_i     (inst[31:20]),
+    .data_o     (MUX_ALUSrc.data2_i)
+);
+
+IDEX IDEX(
+);
 
 MUX32 MUX_ALUSrc(
     .data1_i    (Registers.RS2data_o),
@@ -66,14 +96,6 @@ MUX32 MUX_ALUSrc(
 );
 
 
-
-Sign_Extend Sign_Extend(
-    .data_i     (inst[31:20]),
-    .data_o     (MUX_ALUSrc.data2_i)
-);
-
-  
-
 ALU ALU(
     .data1_i    (Registers.RS1data_o),
     .data2_i    (MUX_ALUSrc.data_o),
@@ -81,7 +103,6 @@ ALU ALU(
     .data_o     (Registers.RDdata_i),
     .Zero_o     (zero)
 );
-
 
 
 ALU_Control ALU_Control(
@@ -106,16 +127,6 @@ MUX32 MUX_MemtoReg(
     .data_o     (MEMWB.RegSrc)
 );
 
-IFID IFID(
-    .clk_i 	    (clk_i),
-    .start_i 	(start_i),
-    .addr_i 	(addpc_out),
-    .instr_i 	(Instruction_Memory.instr_o),
-    .Flush_i	(branch | jump),
-    .Stall_i    (HazardDetection_Unit.Stall_o),
-    .addr_o	    (IFIDaddr_o),
-    .inst_o	    (inst)
-);
 
 
 
