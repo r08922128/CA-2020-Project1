@@ -88,6 +88,22 @@ Sign_Extend Sign_Extend(
 IDEX IDEX(
 );
 
+MUX32_4Input MUX_ALUSrc_RS1(
+    .data1_i    (),
+    .data2_i    (),
+    .data3_i    (),
+    .select_i   (),
+    .data_o     ()
+);
+
+MUX32_4Input MUX_ALUSrc_RS2(
+    .data1_i    (),
+    .data2_i    (),
+    .data3_i    (),
+    .select_i   (),
+    .data_o     ()
+);
+
 MUX32 MUX_ALUSrc(
     .data1_i    (Registers.RS2data_o),
     .data2_i    (Sign_Extend.data_o),
@@ -111,6 +127,10 @@ ALU_Control ALU_Control(
     .ALUCtrl_o  (ALU.ALUCtrl_i)
 );
 
+EXMEM EXMEM (
+
+);
+
 Data_Memory Data_Memory(
     .clk_i      (), 
     .addr_i     (), 
@@ -118,6 +138,10 @@ Data_Memory Data_Memory(
     .MemWrite_i (),
     .data_i     (),
     .data_o     ()
+);
+
+MEMWB MEMWB(
+
 );
 
 MUX32 MUX_MemtoReg(
