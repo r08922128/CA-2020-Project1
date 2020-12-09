@@ -86,6 +86,36 @@ Sign_Extend Sign_Extend(
 );
 
 IDEX IDEX(
+    .clk_i (clk_i), 
+    .start_i (start_i), 
+    .RegWrite_i (MUX8.data_o[7:7]), 
+    .MemtoReg_i (MUX8.data_o[6:6]),  
+    .MemRead_i (MUX8.data_o[5:5]), 
+    .MemWrite_i (MUX8.data_o[4:4]), 
+    .RegDst_i (MUX8.data_o[3:3]), 
+    .ALUOp_i (MUX8.data_o[2:1]), 
+    .ALUSrc_i (MUX8.data_o[0:0]), 
+    .addr_i (IFIDaddr_o), 
+    .RSdata_i (Registers.RSdata_o), 
+    .RTdata_i (Registers.RTdata_o), 
+    .Sign_Extend_i (Sign_Extend.data_o), 
+    .Sign_Extend_o (IOperand),
+    .RSaddr_i (inst[25:21]),
+    .RTaddr_i (inst[20:16]), 
+    .RDaddr_i (inst[15:11]), 
+    .RegWrite_o (), 
+    .MemtoReg_o (), 
+    .MemRead_o (MemRead_out), 
+    .MemWrite_o (), 
+    .RegDst_o (), 
+    .ALUOp_o (), 
+    .ALUSrc_o (), 
+    .addr_o (), 
+    .RSdata_o (), 
+    .RTdata_o (),
+    .RSaddr_o	(),
+    .RTaddr_o (IDEX_RTaddr), 
+    .RDaddr_o ()
 );
 
 MUX32_4Input MUX_ALUSrc_RS1(
@@ -128,6 +158,23 @@ ALU_Control ALU_Control(
 );
 
 EXMEM EXMEM (
+    .clk_i (clk_i),
+    .start_i (start_i),
+    .RegWrite_i (IDEX.RegWrite_o),
+    .MemtoReg_i (IDEX.MemtoReg_o),
+    .MemRead_i (MemRead_out),
+    .MemWrite_i (IDEX.MemWrite_o),
+    .ALUdata_i (ALU.data_o),
+    .RegWaddr_i (MUX_RegDst.data_o), 
+    .MemWdata_i (ALURtSrc),
+    .RegWrite_o (EXMEMRegWrite_o),
+    .MemtoReg_o (),
+    .MemRead_o (),
+    .MemWrite_o (),
+    .ALUzero_o (),
+    .ALUdata_o (ALUresult),
+    .RegWaddr_o (EXMEM_RDaddr),
+    .MemWdata_o ()
 
 );
 
@@ -141,7 +188,18 @@ Data_Memory Data_Memory(
 );
 
 MEMWB MEMWB(
-
+	.clk_i (clk_i),
+	.start_i (start_i),
+	.RegWrite_i (EXMEMRegWrite_o),
+	.MemtoReg_i (EXMEM.MemtoReg_o),
+	.ReadData_i (Data_Memory.data_o),
+	.ALUdata_i (ALUresult),
+	.RegWaddr_i (EXMEM_RDaddr),
+	.RegWrite_o (MEMWBRegWrite_o),
+	.MemtoReg_o (),
+	.ReadData_o (),
+	.ALUdata_o (),
+	.RegWaddr_o (MEMWB_RDaddr)
 );
 
 MUX32 MUX_MemtoReg(
