@@ -10,12 +10,12 @@ input               clk_i;
 input               rst_i;
 input               start_i;
 
-wire [31:0] inst,addr;
+wire [31:0] PC_addr;
 wire zero;
 
 MUX32 MUX_PCSrc(
-    .data1_i (),
-    .data2_i (),    
+    .data1_i (Add_PC.data_o),
+    .data2_i (Add_Branch_addr.data_o),    
     .select_i (),  
     .data_o ()
 );
@@ -26,96 +26,97 @@ PC PC(
     .start_i    (start_i),
     .PCWrite_i  (),
     .pc_i       (Add_PC.data_o),
-    .pc_o       (addr)
+    .pc_o       (PC_addr_o)
 );
 
 Instruction_Memory Instruction_Memory(
-    .addr_i     (addr), 
-    .inst_o     (inst)
+    .addr_i     (PC_addr_o), 
+    .instr_o    ()
 );
 
 Adder Add_PC(
-    .data1_in   (addr),
+    .data1_in   (PC_addr_o),
     .data2_in   (32'd4),
-    .data_o     (MUX_PCSrc.data1_i)
+    .data_o     ()
 );
+
+wire [31:0] IFID_addr_o,IFID_inst_o;
 
 IFID IFID(
     .clk_i 	    (clk_i),
     .start_i 	(start_i),
-    .addr_i 	(addpc_out),
+    .addr_i 	(PC_addr),
     .instr_i 	(Instruction_Memory.instr_o),
-    .Flush_i	(branch | jump),
+    .Flush_i	(branch),
     .Stall_i    (HazardDetection_Unit.Stall_o),
-    .addr_o	    (IFIDaddr_o),
-    .inst_o	    (inst)
+    .addr_o	    (IFID_addr_o),
+    .inst_o	    (IFID_inst_o)
 );
 
 Adder Add_Branch_addr(
-    .data1_in (IFIDaddr_o), 
-    .data2_in (Sign_Extend.data_o << 1),
-    .data_o (MUX_PCSrc.data2_i)
+    .data1_in   (Sign_Extend.data_o << 1), 
+    .data2_in   (IFID_addr_o),
+    .data_o     ()
 );
 
 Registers Registers(
-    .clk_i      (clk_i),
-    .RS1addr_i   (inst[19:15]),
-    .RS2addr_i   (inst[24:20]),
-    .RDaddr_i   (inst[11:7]), 
-    .RDdata_i   (ALU.data_o),
-    .RegWrite_i (Control.RegWrite_o), 
-    .RS1data_o   (ALU.data1_i), 
-    .RS2data_o   (MUX_ALUSrc.data1_i) 
+    .clk_i          (clk_i),
+    .RS1addr_i      (IFID_inst_o[19:15]),
+    .RS2addr_i      (IFID_inst_o[24:20]),
+    .RDaddr_i       (), 
+    .RDdata_i       (),
+    .RegWrite_i     (), 
+    .RS1data_o      (), 
+    .RS2data_o      () 
 );
 
 Control Control(
-    .Op_i       (inst[6:0]),
-	.RegWrite_o (Registers.RegWrite_i),
+    .Op_i       (IFID_inst_o[6:0]),
+	.RegWrite_o (),
 	.MemtoReg_o (),
 	.MemRead_o  (),
 	.MemWrite_o (),
-	.ALUOp_o    (ALU_Control.ALUOp_i),
-	.ALUSrc_o   (MUX_ALUSrc.select_i),
+	.ALUOp_o    (),
+	.ALUSrc_o   (),
     .Branch_o   (),
 );
 
 
-Sign_Extend Sign_Extend(
-    .data_i     (inst[31:20]),
-    .data_o     (MUX_ALUSrc.data2_i)
+ImmGen ImmGen(
+    .clk_i          (clk_i),
+    .data_i         (IFID_inst_o),
+    .data_o         ()
 );
 
 IDEX IDEX(
     .clk_i (clk_i), 
     .start_i (start_i), 
-    .RegWrite_i (MUX8.data_o[7:7]), 
-    .MemtoReg_i (MUX8.data_o[6:6]),  
-    .MemRead_i (MUX8.data_o[5:5]), 
-    .MemWrite_i (MUX8.data_o[4:4]), 
-    .RegDst_i (MUX8.data_o[3:3]), 
-    .ALUOp_i (MUX8.data_o[2:1]), 
-    .ALUSrc_i (MUX8.data_o[0:0]), 
-    .addr_i (IFIDaddr_o), 
-    .RSdata_i (Registers.RSdata_o), 
-    .RTdata_i (Registers.RTdata_o), 
-    .Sign_Extend_i (Sign_Extend.data_o), 
-    .Sign_Extend_o (IOperand),
-    .RSaddr_i (inst[25:21]),
-    .RTaddr_i (inst[20:16]), 
-    .RDaddr_i (inst[15:11]), 
+    .RegWrite_i (Control.RegWrite_o), 
+    .MemtoReg_i (Control.MemtoReg_o),  
+    .MemRead_i (Control.MemRead_o), 
+    .MemWrite_i (Control.MemWrite_o), 
+    .ALUOp_i (Control.ALUOp_o), 
+    .ALUSrc_i (Control.ALUSrc_o),
+    .RS1data_i (Registers.RS1data_o), 
+    .RS2data_i (Registers.RS2data_o), 
+    .ImmGen_i (ImmGen.data_o),
+    .funct_7_3_i ({IFID_inst_o[31:25],IFID_inst_o[14:12]),
+    .RS1addr_i (IFID_inst_o[19:15]),
+    .RS2addr_i (IFID_inst_o[24:20]),
+    .RDaddr_i (IFID_inst_o[11:7]), 
     .RegWrite_o (), 
-    .MemtoReg_o (), 
-    .MemRead_o (MemRead_out), 
+    .MemtoReg_o (),  
+    .MemRead_o (), 
     .MemWrite_o (), 
-    .RegDst_o (), 
     .ALUOp_o (), 
-    .ALUSrc_o (), 
-    .addr_o (), 
-    .RSdata_o (), 
-    .RTdata_o (),
-    .RSaddr_o	(),
-    .RTaddr_o (IDEX_RTaddr), 
-    .RDaddr_o ()
+    .ALUSrc_o (),
+    .RS1data_o (), 
+    .RS2data_o (), 
+    .ImmGen_o (),
+    .funct_7_3_o (),
+    .RS1addr_o (),
+    .RS2addr_o (),
+    .RDaddr_o (), 
 );
 
 MUX32_4Input MUX_ALUSrc_RS1(
