@@ -25,11 +25,11 @@ always@(posedge clk_i or posedge rst_i) begin
         pc_o <= 32'b0;
     end  
     else begin
-        if (start_i && !PCWrite_i) begin
-            pc_o <= pc_i;
-        end
-        else begin
-            pc_o <= pc_o;
+        if (PCWrite_i) begin
+            if(start_i)
+                pc_o <= pc_i;
+            else
+                pc_o <= pc_o;
         end
     end
 end
