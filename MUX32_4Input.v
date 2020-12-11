@@ -20,9 +20,9 @@ assign data_o = data_reg;
 
 always @(data1_i or data2_i or data3_i or select_i)begin
     case(select_i)
-        2'b00: data_reg=data1_1;
-        2'b01: data_reg=data1_2;
-        2'b10: data_reg=data1_3;
+        2'b00: data_reg=data1_i;
+        2'b01: data_reg=data2_i;
+        2'b10: data_reg=data3_i;
     endcase
 end
 
