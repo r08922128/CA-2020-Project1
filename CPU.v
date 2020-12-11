@@ -69,6 +69,18 @@ HazardDetection_Unit HazardDetection_Unit(
     NoOp_o          (),
 );
 
+Forward Forward(
+    .IDEX_RS1_i (),
+    .IDEX_RS2_i (),
+    .EXMEM_RegWrite_i (),
+    .EXMEM_Rd_i (),
+    .MEMWB_RegWrite_i (),
+    .MEMWB_Rd_i (),
+    .ForwardA_o (),
+    .ForwardB_o (),
+);
+
+
 Registers Registers(
     .clk_i          (clk_i),
     .RS1addr_i      (IFID_inst_o[19:15]),
