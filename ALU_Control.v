@@ -23,12 +23,13 @@ always @(funct_i or ALUOp_i) begin
     end
     else if(ALUOp_i == 2'b00) begin
         case(funct_i[2:0])
-            3'b000: ALUCtrl_o=4'b0110//addi
-            3'b101: ALUCtrl_o=4'b0111//srai
-            3'b010: ALUCtrl_o=4'b1000//lw,sw
+            3'b000: ALUCtrl_o=4'b0110;//addi
+            3'b101: ALUCtrl_o=4'b0111;//srai
+            3'b010: ALUCtrl_o=4'b1000;//lw,sw
+        endcase
     end
     else if(ALUOp_i == 2'b01) begin
-        ALUCtrl_o=4'b1001//beq
+        ALUCtrl_o=4'b1001;//beq
     end
 end
 
