@@ -155,18 +155,18 @@ IDEX IDEX(
 );
 
 MUX32_4Input MUX_ALUSrc_RS1(
-    .data1_i    (),
+    .data1_i    (IDEX.RS1data_o),
     .data2_i    (MUX_MemtoReg.data_o),
     .data3_i    (EXMEM.ALUdata_o),
-    .select_i   (),
+    .select_i   (Forward.ForwardA_o),
     .data_o     ()
 );
 
 MUX32_4Input MUX_ALUSrc_RS2(
-    .data1_i    (),
+    .data1_i    (IDEX.RS2data_o),
     .data2_i    (MUX_MemtoReg.data_o),
     .data3_i    (EXMEM.ALUdata_o),
-    .select_i   (),
+    .select_i   (Forward.ForwardB_o),
     .data_o     ()
 );
 
