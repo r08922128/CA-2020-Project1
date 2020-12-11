@@ -16,7 +16,7 @@ wire zero;
 MUX32 MUX_PCSrc(
     .data1_i (Add_PC.data_o),
     .data2_i (Add_Branch_addr.data_o),    
-    .select_i (),  
+    .select_i (Branch_And.data_o),  
     .data_o ()
 );
 
@@ -24,7 +24,7 @@ PC PC(
     .clk_i      (clk_i),
     .rst_i      (rst_i),
     .start_i    (start_i),
-    .PCWrite_i  (),
+    .PCWrite_i  (HazardDetection_Unit.PCWrite_o),
     .pc_i       (Add_PC.data_o),
     .pc_o       (PC_addr_o)
 );
@@ -35,8 +35,8 @@ Instruction_Memory Instruction_Memory(
 );
 
 Adder Add_PC(
-    .data1_in   (PC_addr_o),
-    .data2_in   (32'd4),
+    .data1_i   (PC_addr_o),
+    .data2_i   (32'd4),
     .data_o     ()
 );
 
@@ -47,7 +47,7 @@ IFID IFID(
     .start_i 	(start_i),
     .addr_i 	(PC_addr),
     .instr_i 	(Instruction_Memory.instr_o),
-    .Flush_i	(branch),
+    .Flush_i	(Branch_And.data_o),
     .Stall_i    (HazardDetection_Unit.Stall_o),
     .addr_o	    (IFID_addr_o),
     .inst_o	    (IFID_inst_o)
@@ -57,6 +57,16 @@ Adder Add_Branch_addr(
     .data1_in   (Sign_Extend.data_o << 1), 
     .data2_in   (IFID_addr_o),
     .data_o     ()
+);
+
+HazardDetection_Unit HazardDetection_Unit(
+    IFID_RS1_i      (IFID_inst_o[19:15]),
+    IFID_RS2_i      (IFID_inst_o[24:20]),
+    IDEX_MemRead_i  (IDEX.MemRead_o),
+    IDEX_RD_i       (IDEX.RDaddr_o),
+    PCWrite_o       (),
+    Stall_o         (),
+    NoOp_o          (),
 );
 
 Registers Registers(
@@ -72,6 +82,7 @@ Registers Registers(
 
 Control Control(
     .Op_i       (IFID_inst_o[6:0]),
+    .NoOp_i     (HazardDetection_Unit.NoOp_o),
 	.RegWrite_o (),
 	.MemtoReg_o (),
 	.MemRead_o  (),
@@ -86,6 +97,18 @@ ImmGen ImmGen(
     .clk_i          (clk_i),
     .data_i         (IFID_inst_o),
     .data_o         ()
+);
+
+And Branch_And(
+    .data1_i	(Control.Branch_o),
+    .data2_i	(RS1_RS2_eq.data_o),
+    .data_o	    ()
+);
+
+Equal RS1_RS2_eq(
+    .data1_i    (Registers.RS1data_o),
+    .data2_i    (Registers.RS2data_o),
+    .data_o     ()
 );
 
 IDEX IDEX(

@@ -25,7 +25,7 @@ always @ ( posedge clk_i or negedge start_i) begin
     inst_o <= 0;
   end
   else begin
-    if (Stall_i) begin //stall
+    if (Stall_i) begin
         addr_o <= addr_o;
         inst_o <= inst_o;
     end
