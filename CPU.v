@@ -72,10 +72,10 @@ HazardDetection_Unit HazardDetection_Unit(
 Forward Forward(
     .IDEX_RS1_i (),
     .IDEX_RS2_i (),
-    .EXMEM_RegWrite_i (),
-    .EXMEM_Rd_i (),
-    .MEMWB_RegWrite_i (),
-    .MEMWB_Rd_i (),
+    .EXMEM_RegWrite_i (EXMEM.RegWrite_o),
+    .EXMEM_Rd_i (EXMEM.RegWaddr_o),
+    .MEMWB_RegWrite_i (MEMWB.RegWrite_o),
+    .MEMWB_Rd_i (MEMWB.RegWaddr_o),
     .ForwardA_o (),
     .ForwardB_o (),
 );
@@ -156,16 +156,16 @@ IDEX IDEX(
 
 MUX32_4Input MUX_ALUSrc_RS1(
     .data1_i    (),
-    .data2_i    (),
-    .data3_i    (),
+    .data2_i    (MUX_MemtoReg.data_o),
+    .data3_i    (EXMEM.ALUdata_o),
     .select_i   (),
     .data_o     ()
 );
 
 MUX32_4Input MUX_ALUSrc_RS2(
     .data1_i    (),
-    .data2_i    (),
-    .data3_i    (),
+    .data2_i    (MUX_MemtoReg.data_o),
+    .data3_i    (EXMEM.ALUdata_o),
     .select_i   (),
     .data_o     ()
 );
@@ -182,8 +182,8 @@ ALU ALU(
     .data1_i    (Registers.RS1data_o),
     .data2_i    (MUX_ALUSrc.data_o),
     .ALUCtrl_i  (ALU_Control.ALUCtrl_o),
-    .data_o     (Registers.RDdata_i),
-    .Zero_o     (zero)
+    .data_o     (),
+    .Zero_o     ()
 );
 
 
@@ -198,51 +198,49 @@ EXMEM EXMEM (
     .start_i (start_i),
     .RegWrite_i (IDEX.RegWrite_o),
     .MemtoReg_i (IDEX.MemtoReg_o),
-    .MemRead_i (MemRead_out),
+    .MemRead_i (IDEX.MemRead_o),
     .MemWrite_i (IDEX.MemWrite_o),
     .ALUdata_i (ALU.data_o),
-    .RegWaddr_i (MUX_RegDst.data_o), 
-    .MemWdata_i (ALURtSrc),
-    .RegWrite_o (EXMEMRegWrite_o),
+    .MemWdata_i (MUX_RegDst.data_o),
+    .RegWaddr_i (IDEX.RDaddr_o), 
+    .RegWrite_o (),
     .MemtoReg_o (),
     .MemRead_o (),
     .MemWrite_o (),
-    .ALUzero_o (),
-    .ALUdata_o (ALUresult),
-    .RegWaddr_o (EXMEM_RDaddr),
-    .MemWdata_o ()
-
+    .ALUdata_o (),
+    .MemWdata_o (),
+    .RegWaddr_o ()
 );
 
 Data_Memory Data_Memory(
-    .clk_i      (), 
-    .addr_i     (), 
-    .MemRead_i  (),
-    .MemWrite_i (),
-    .data_i     (),
+    .clk_i      (clk_i), 
+    .addr_i     (EXMEM.ALUdata_o), 
+    .MemRead_i  (EXMEM.MemRead_o),
+    .MemWrite_i (EXMEM.MemWrite_o),
+    .data_i     (EXMEM.MemWrite_o),
     .data_o     ()
 );
 
 MEMWB MEMWB(
 	.clk_i (clk_i),
 	.start_i (start_i),
-	.RegWrite_i (EXMEMRegWrite_o),
+	.RegWrite_i (EXMEM.RegWrite_o),
 	.MemtoReg_i (EXMEM.MemtoReg_o),
+    .ALUdata_i (EXMEM.ALUdata_o),
 	.ReadData_i (Data_Memory.data_o),
-	.ALUdata_i (ALUresult),
-	.RegWaddr_i (EXMEM_RDaddr),
-	.RegWrite_o (MEMWBRegWrite_o),
+	.RegWaddr_i (EXMEM.RegWaddr_o),
+	.RegWrite_o (),
 	.MemtoReg_o (),
+    .ALUdata_o (),
 	.ReadData_o (),
-	.ALUdata_o (),
-	.RegWaddr_o (MEMWB_RDaddr)
+	.RegWaddr_o ()
 );
 
 MUX32 MUX_MemtoReg(
     .data1_i    (MEMWB.ALUdata_o),
     .data2_i    (MEMWB.ReadData_o),
     .select_i   (MEMWB.MemtoReg_o),
-    .data_o     (MEMWB.RegSrc)
+    .data_o     ()
 );
 
 
