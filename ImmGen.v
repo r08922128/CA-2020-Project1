@@ -1,4 +1,4 @@
-module Sign_Extend(
+module ImmGen(
     clk_i,
     data_i,
     data_o

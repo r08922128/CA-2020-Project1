@@ -6,7 +6,7 @@ module ALU_Control(
 
 input [9:0] funct_i;
 input [1:0] ALUOp_i;
-output [3:0] ALUCtrl_o;
+output [2:0] ALUCtrl_o;
 
 reg [2:0] ALUCtrl_o;
 
