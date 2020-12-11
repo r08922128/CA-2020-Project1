@@ -3,7 +3,7 @@ module Equal
     data1_i,
     data2_i,
     data_o
-)
+);
 
 input [31:0] data1_i,data2_i;
 output data_o;

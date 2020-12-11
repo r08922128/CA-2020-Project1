@@ -9,39 +9,37 @@ module EXMEM
     ALUdata_i,
     MemWdata_i,
     RegWaddr_i, 
-
     RegWrite_o,
     MemtoReg_o,
     MemRead_o,
     MemWrite_o,
-    ALUzero_o,
     ALUdata_o,
 	MemWdata_o,
     RegWaddr_o
 );
 
-input           clk_i, 
-                start_i,
-                RegWrite_i, 
-                MemtoReg_i, 
-                MemRead_i, 
-                MemWrite_i, 
-input [31:0]    ALUdata_i,
+input           clk_i;
+                start_i;
+                RegWrite_i; 
+                MemtoReg_i; 
+                MemRead_i;
+                MemWrite_i; 
+input [31:0]    ALUdata_i;
                 MemWdata_i;
 input [4:0]     RegWaddr_i;
-output          RegWrite_o, 
-                MemtoReg_o, 
-                MemRead_o, 
-                MemWrite_o, 
-output [31:0]   ALUdata_o,
+output          RegWrite_o; 
+                MemtoReg_o; 
+                MemRead_o;
+                MemWrite_o; 
+output [31:0]   ALUdata_o;
                 MemWdata_o; 
 output [4:0]    RegWaddr_o;
-reg             RegWrite_o, 
-                MemtoReg_o, 
-                MemRead_o, 
-                MemWrite_o, 
-reg [31:0]      ALUdata_o,
-                MemWdata_o
+reg             RegWrite_o; 
+                MemtoReg_o; 
+                MemRead_o; 
+                MemWrite_o; 
+reg [31:0]      ALUdata_o;
+                MemWdata_o;
 reg [4:0]       RegWaddr_o;
 
 always @ ( posedge clk_i or negedge start_i) begin
@@ -64,4 +62,5 @@ always @ ( posedge clk_i or negedge start_i) begin
 		MemWdata_o <= MemWdata_i;
 	end
 end
+
 endmodule

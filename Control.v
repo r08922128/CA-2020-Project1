@@ -75,6 +75,7 @@ always@(Op_i)begin
                 ALUSrc_o <= 1'b0;  
                 Branch_o <= 1'b1;        
             end
+        endcase
     end
 end
 

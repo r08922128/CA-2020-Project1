@@ -66,7 +66,7 @@ HazardDetection_Unit HazardDetection_Unit(
     IDEX_RD_i       (IDEX.RDaddr_o),
     PCWrite_o       (),
     Stall_o         (),
-    NoOp_o          (),
+    NoOp_o          ()
 );
 
 
@@ -90,7 +90,7 @@ Control Control(
 	.MemWrite_o (),
 	.ALUOp_o    (),
 	.ALUSrc_o   (),
-    .Branch_o   (),
+    .Branch_o   ()
 );
 
 
@@ -124,7 +124,7 @@ IDEX IDEX(
     .RS1data_i  (Registers.RS1data_o), 
     .RS2data_i  (Registers.RS2data_o), 
     .ImmGen_i   (ImmGen.data_o),
-    .funct_7_3_i ({IFID_inst_o[31:25],IFID_inst_o[14:12]),
+    .funct_7_3_i ({IFID_inst_o[31:25],IFID_inst_o[14:12]}),
     .RS1addr_i  (IFID_inst_o[19:15]),
     .RS2addr_i  (IFID_inst_o[24:20]),
     .RDaddr_i   (IFID_inst_o[11:7]), 
@@ -140,7 +140,7 @@ IDEX IDEX(
     .funct_7_3_o (),
     .RS1addr_o  (),
     .RS2addr_o  (),
-    .RDaddr_o   (), 
+    .RDaddr_o   ()
 );
 
 MUX32_4Input MUX_ALUSrc_RS1(
@@ -174,7 +174,7 @@ Forward Forward(
     .MEMWB_RegWrite_i   (MEMWB.RegWrite_o),
     .MEMWB_Rd_i         (MEMWB.RegWaddr_o),
     .ForwardA_o         (),
-    .ForwardB_o         (),
+    .ForwardB_o         ()
 );
 
 ALU ALU(

@@ -91,20 +91,22 @@ always @ ( posedge clk_i or negedge start_i) begin
         RDaddr_o <= 0;
     end
     else begin
-    if (~start_i) begin
-        RegWrite_o <= RegWrite_i;
-        MemtoReg_o <= MemtoReg_i;
-        MemRead_o <= MemRead_i;
-        MemWrite_o <= MemWrite_i;
-        ALUSrc_o <= ALUSrc_i;
-        ALUOp_o <= ALUOp_i;
-        RS1data_o <= RS1data_i;
-        RS2data_o <= RS2data_i;
-        ImmGen_o <= ImmGen_i;
-        funct_7_3_o <= funct_7_3_i;
-        RS1addr_o <= RS1addr_i;
-        RS2addr_o <= RS2addr_i;
-        RDaddr_o <= RDaddr_i;
+        if (~start_i) begin
+            RegWrite_o <= RegWrite_i;
+            MemtoReg_o <= MemtoReg_i;
+            MemRead_o <= MemRead_i;
+            MemWrite_o <= MemWrite_i;
+            ALUSrc_o <= ALUSrc_i;
+            ALUOp_o <= ALUOp_i;
+            RS1data_o <= RS1data_i;
+            RS2data_o <= RS2data_i;
+            ImmGen_o <= ImmGen_i;
+            funct_7_3_o <= funct_7_3_i;
+            RS1addr_o <= RS1addr_i;
+            RS2addr_o <= RS2addr_i;
+            RDaddr_o <= RDaddr_i;
+        end
     end
 end
+
 endmodule
