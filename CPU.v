@@ -70,8 +70,8 @@ HazardDetection_Unit HazardDetection_Unit(
 );
 
 Forward Forward(
-    .IDEX_RS1_i (),
-    .IDEX_RS2_i (),
+    .IDEX_RS1_i (IDEX.RS1addr_o),
+    .IDEX_RS2_i (IDEX.RS2addr_o),
     .EXMEM_RegWrite_i (EXMEM.RegWrite_o),
     .EXMEM_Rd_i (EXMEM.RegWaddr_o),
     .MEMWB_RegWrite_i (MEMWB.RegWrite_o),
