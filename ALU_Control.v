@@ -6,9 +6,9 @@ module ALU_Control(
 
 input [9:0] funct_i;
 input [1:0] ALUOp_i;
-output [2:0] ALUCtrl_o;
+output [3:0] ALUCtrl_o;
 
-reg [2:0] ALUCtrl_o;
+reg [3:0] ALUCtrl_o;
 
 always @(funct_i or ALUOp_i) begin
     if (ALUOp_i == 2'b10) begin
