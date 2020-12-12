@@ -178,7 +178,7 @@ Forward Forward(
 );
 
 ALU ALU(
-    .data1_i    (MUX32_4Input.data_o),
+    .data1_i    (MUX_ALUSrc_RS1.data_o),
     .data2_i    (MUX_ALUSrc.data_o),
     .ALUCtrl_i  (ALU_Control.ALUCtrl_o),
     .data_o     (),
