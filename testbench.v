@@ -70,7 +70,7 @@ always@(posedge Clk) begin
 
     // put in your own signal to count stall and flush
     if(CPU.Hazard_Detection.Stall_o == 1 && CPU.Control.Branch_o == 0)stall = stall + 1;
-    if(CPU.Flush == 1)flush = flush + 1;  
+    if(CPU.Branch_And.data_o == 1)flush = flush + 1;  
 
     // print PC
     // DO NOT CHANGE THE OUTPUT FORMAT

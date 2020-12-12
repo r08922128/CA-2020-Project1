@@ -24,18 +24,18 @@ PC PC(
     .clk_i      (clk_i),
     .rst_i      (rst_i),
     .start_i    (start_i),
-    .PCWrite_i  (HazardDetection_Unit.PCWrite_o),
+    .PCWrite_i  (Hazard_Detection.PCWrite_o),
     .pc_i       (Add_PC.data_o),
-    .pc_o       (PC_addr_o)
+    .pc_o       (PC_addr)
 );
 
 Instruction_Memory Instruction_Memory(
-    .addr_i     (PC_addr_o), 
+    .addr_i     (PC_addr), 
     .instr_o    ()
 );
 
 Adder Add_PC(
-    .data1_i    (PC_addr_o),
+    .data1_i    (PC_addr),
     .data2_i    (32'd4),
     .data_o     ()
 );
@@ -46,27 +46,27 @@ IFID IFID(
     .clk_i 	    (clk_i),
     .start_i 	(start_i),
     .addr_i 	(PC_addr),
-    .instr_i 	(Instruction_Memory.instr_o),
+    .inst_i 	(Instruction_Memory.instr_o),
     .Flush_i	(Branch_And.data_o),
-    .Stall_i    (HazardDetection_Unit.Stall_o),
+    .Stall_i    (Hazard_Detection.Stall_o),
     .addr_o	    (IFID_addr_o),
     .inst_o	    (IFID_inst_o)
 );
 
 Adder Add_Branch_addr(
-    .data1_in   (ImmGen.data_o << 1), 
-    .data2_in   (IFID_addr_o),
+    .data1_i   (ImmGen.data_o << 1), 
+    .data2_i   (IFID_addr_o),
     .data_o     ()
 );
 
-HazardDetection_Unit HazardDetection_Unit(
-    IFID_RS1_i      (IFID_inst_o[19:15]),
-    IFID_RS2_i      (IFID_inst_o[24:20]),
-    IDEX_MemRead_i  (IDEX.MemRead_o),
-    IDEX_RD_i       (IDEX.RDaddr_o),
-    PCWrite_o       (),
-    Stall_o         (),
-    NoOp_o          ()
+Hazard_Detection Hazard_Detection(
+    .IFID_RS1_i      (IFID_inst_o[19:15]),
+    .IFID_RS2_i      (IFID_inst_o[24:20]),
+    .IDEX_MemRead_i  (IDEX.MemRead_o),
+    .IDEX_RD_i       (IDEX.RDaddr_o),
+    .PCWrite_o       (),
+    .Stall_o         (),
+    .NoOp_o          ()
 );
 
 
@@ -83,7 +83,7 @@ Registers Registers(
 
 Control Control(
     .Op_i       (IFID_inst_o[6:0]),
-    .NoOp_i     (HazardDetection_Unit.NoOp_o),
+    .NoOp_i     (Hazard_Detection.NoOp_o),
 	.RegWrite_o (),
 	.MemtoReg_o (),
 	.MemRead_o  (),
@@ -163,7 +163,7 @@ MUX32 MUX_ALUSrc(
     .data1_i    (MUX32_ALUSrc_RS2.data_o),
     .data2_i    (IDEX.ImmGen_o),
     .select_i   (IDEX.ALUSrc_o),
-    .data_o     (ALU.data2_i)
+    .data_o     ()
 );
 
 Forward Forward(
@@ -189,7 +189,7 @@ ALU ALU(
 ALU_Control ALU_Control(
     .funct_i    (IDEX.funct_7_3_o),
     .ALUOp_i    (IDEX.ALUOp_o),
-    .ALUCtrl_o  (ALU.ALUCtrl_i)
+    .ALUCtrl_o  ()
 );
 
 EXMEM EXMEM (
@@ -216,7 +216,7 @@ Data_Memory Data_Memory(
     .addr_i     (EXMEM.ALUdata_o), 
     .MemRead_i  (EXMEM.MemRead_o),
     .MemWrite_i (EXMEM.MemWrite_o),
-    .data_i     (EXMEM.MemWrite_o),
+    .data_i     (EXMEM.MemWdata_o),
     .data_o     ()
 );
 
