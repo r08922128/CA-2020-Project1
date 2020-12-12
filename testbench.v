@@ -47,11 +47,11 @@ initial begin
     
     // Load instructions into instruction memory
     // Make sure you change back to "instruction.txt" before submission
-    $readmemb("instruction.txt", CPU.Instruction_Memory.memory);
+    $readmemb("instruction_1.txt", CPU.Instruction_Memory.memory);
     
     // Open output file
     // Make sure you change back to "output.txt" before submission
-    outfile = $fopen("output.txt") | 1;
+    outfile = $fopen("output_1.txt") | 1;
     
     Clk = 1;
     Reset = 1;
