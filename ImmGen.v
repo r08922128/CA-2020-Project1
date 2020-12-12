@@ -18,7 +18,7 @@ always@(posedge clk_i) begin
         data_o={{20{data_i[31]}},data_i[31:25],data_i[11:7]};
     end
     else if (opcode==7'b1100011) begin//beq
-        data_o={{19{data_i[31]}},data_i[31],data_i[7],data_i[30:25],data_i[11:8],0};
+        data_o={{19{data_i[31]}},data_i[31],data_i[7],data_i[30:25],data_i[11:8],1'b0};
     end
     else begin//addi,srai,lw
         data_o={{20{data_i[31]}},data_i[31:20]};

@@ -60,13 +60,13 @@ Adder Add_Branch_addr(
 );
 
 Hazard_Detection Hazard_Detection(
-    IFID_RS1_i      (IFID_inst_o[19:15]),
-    IFID_RS2_i      (IFID_inst_o[24:20]),
-    IDEX_MemRead_i  (IDEX.MemRead_o),
-    IDEX_RD_i       (IDEX.RDaddr_o),
-    PCWrite_o       (),
-    Stall_o         (),
-    NoOp_o          ()
+    .IFID_RS1_i      (IFID_inst_o[19:15]),
+    .IFID_RS2_i      (IFID_inst_o[24:20]),
+    .IDEX_MemRead_i  (IDEX.MemRead_o),
+    .IDEX_RD_i       (IDEX.RDaddr_o),
+    .PCWrite_o       (),
+    .Stall_o         (),
+    .NoOp_o          ()
 );
 
 
@@ -216,7 +216,7 @@ Data_Memory Data_Memory(
     .addr_i     (EXMEM.ALUdata_o), 
     .MemRead_i  (EXMEM.MemRead_o),
     .MemWrite_i (EXMEM.MemWrite_o),
-    .data_i     (EXMEM.MemWrite_o),
+    .data_i     (EXMEM.MemWdata_o),
     .data_o     ()
 );
 
