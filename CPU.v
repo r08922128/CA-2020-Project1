@@ -160,7 +160,7 @@ MUX32_4Input MUX_ALUSrc_RS2(
 );
 
 MUX32 MUX_ALUSrc(
-    .data1_i    (MUX32_ALUSrc_RS2.data_o),
+    .data1_i    (MUX_ALUSrc_RS2.data_o),
     .data2_i    (IDEX.ImmGen_o),
     .select_i   (IDEX.ALUSrc_o),
     .data_o     ()
