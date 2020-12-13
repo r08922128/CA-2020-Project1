@@ -32,12 +32,12 @@ always @(IDEX_RS1_i or IDEX_RS2_i or EXMEM_Rd_i or EXMEM_RegWrite_i or MEMWB_Rd_
 
     if (EXMEM_RegWrite_i && (EXMEM_Rd_i != 5'b00000) && (EXMEM_Rd_i == IDEX_RS1_i))
         ForwardA_reg <= 2'b10;
-    else if(MEMWB_RegWrite_i && (MEMWB_Rd_i != 5'b00000) && !(EXMEM_RegWrite_i && (EXMEM_Rd_i != 5'b00000) && (EXMEM_Rd_i == IDEX_RS1_i) && (MEMWB_Rd_i == IDEX_RS1_i)))
+    else if(MEMWB_RegWrite_i && (MEMWB_Rd_i != 5'b00000) && !(EXMEM_RegWrite_i && (EXMEM_Rd_i != 5'b00000) && (EXMEM_Rd_i == IDEX_RS1_i)) && (MEMWB_Rd_i == IDEX_RS1_i))
 		ForwardA_reg <= 2'b01;
 
     if (EXMEM_RegWrite_i && (EXMEM_Rd_i != 5'b00000) && (EXMEM_Rd_i == IDEX_RS2_i))
         ForwardB_reg <= 2'b10;
-    else if(MEMWB_RegWrite_i && (MEMWB_Rd_i != 5'b00000) && !(EXMEM_RegWrite_i && (EXMEM_Rd_i != 5'b00000) && (EXMEM_Rd_i == IDEX_RS2_i) && (MEMWB_Rd_i == IDEX_RS2_i)))
+    else if(MEMWB_RegWrite_i && (MEMWB_Rd_i != 5'b00000) && !(EXMEM_RegWrite_i && (EXMEM_Rd_i != 5'b00000) && (EXMEM_Rd_i == IDEX_RS2_i)) && (MEMWB_Rd_i == IDEX_RS2_i))
 		ForwardB_reg <= 2'b01;
 
 end
