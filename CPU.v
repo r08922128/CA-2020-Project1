@@ -200,7 +200,7 @@ EXMEM EXMEM (
     .MemRead_i  (IDEX.MemRead_o),
     .MemWrite_i (IDEX.MemWrite_o),
     .ALUdata_i  (ALU.data_o),
-    .MemWdata_i (IDEX.RS2data_o),
+    .MemWdata_i (MUX_ALUSrc_RS2.data_o),
     .RegWaddr_i (IDEX.RDaddr_o), 
     .RegWrite_o (),
     .MemtoReg_o (),
