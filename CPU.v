@@ -25,7 +25,7 @@ PC PC(
     .rst_i      (rst_i),
     .start_i    (start_i),
     .PCWrite_i  (Hazard_Detection.PCWrite_o),
-    .pc_i       (Add_PC.data_o),
+    .pc_i       (MUX_PCSrc.data_o),
     .pc_o       (PC_addr)
 );
 
