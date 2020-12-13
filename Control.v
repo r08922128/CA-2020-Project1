@@ -18,7 +18,7 @@ output RegWrite_o, MemtoReg_o, MemRead_o, MemWrite_o, ALUSrc_o, Branch_o;
 reg RegWrite_o, MemtoReg_o, MemRead_o, MemWrite_o, ALUSrc_o, Branch_o;
 reg [1:0] ALUOp_o;
 
-always@(Op_i)begin
+always@(*)begin
     if (NoOp_i==1) begin
         RegWrite_o <= 1'b0;
         MemtoReg_o <= 1'b0;
@@ -74,6 +74,15 @@ always@(Op_i)begin
                 ALUOp_o <= 2'b01;
                 ALUSrc_o <= 1'b0;  
                 Branch_o <= 1'b1;        
+            end
+            default:begin
+                RegWrite_o <= 1'b0;
+                MemtoReg_o <= 1'b0;
+                MemRead_o <= 1'b0;
+                MemWrite_o <= 1'b0;
+                ALUOp_o <= 2'b00;
+                ALUSrc_o <= 1'b0;
+                Branch_o <= 1'b0;  
             end
         endcase
     end
