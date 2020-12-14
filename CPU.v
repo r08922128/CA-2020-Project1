@@ -25,7 +25,7 @@ PC PC(
     .rst_i      (rst_i),
     .start_i    (start_i),
     .PCWrite_i  (Hazard_Detection.PCWrite_o),
-    .pc_i       (Add_PC.data_o),
+    .pc_i       (MUX_PCSrc.data_o),
     .pc_o       (PC_addr)
 );
 
@@ -74,7 +74,7 @@ Registers Registers(
     .clk_i          (clk_i),
     .RS1addr_i      (IFID_inst_o[19:15]),
     .RS2addr_i      (IFID_inst_o[24:20]),
-    .RDaddr_i       (MEMWB.RegWaddr_o), 
+    .RDaddr_i       (MEMWB.RDaddr_o), 
     .RDdata_i       (MUX_MemtoReg.data_o),
     .RegWrite_i     (MEMWB.RegWrite_o), 
     .RS1data_o      (), 
@@ -170,9 +170,9 @@ Forward Forward(
     .IDEX_RS1_i         (IDEX.RS1addr_o),
     .IDEX_RS2_i         (IDEX.RS2addr_o),
     .EXMEM_RegWrite_i   (EXMEM.RegWrite_o),
-    .EXMEM_Rd_i         (EXMEM.RegWaddr_o),
+    .EXMEM_Rd_i         (EXMEM.RDaddr_o),
     .MEMWB_RegWrite_i   (MEMWB.RegWrite_o),
-    .MEMWB_Rd_i         (MEMWB.RegWaddr_o),
+    .MEMWB_Rd_i         (MEMWB.RDaddr_o),
     .ForwardA_o         (),
     .ForwardB_o         ()
 );
@@ -201,14 +201,14 @@ EXMEM EXMEM (
     .MemWrite_i (IDEX.MemWrite_o),
     .ALUdata_i  (ALU.data_o),
     .MemWdata_i (MUX_ALUSrc_RS2.data_o),
-    .RegWaddr_i (IDEX.RDaddr_o), 
+    .RDaddr_i (IDEX.RDaddr_o), 
     .RegWrite_o (),
     .MemtoReg_o (),
     .MemRead_o  (),
     .MemWrite_o (),
     .ALUdata_o  (),
     .MemWdata_o (),
-    .RegWaddr_o ()
+    .RDaddr_o ()
 );
 
 Data_Memory Data_Memory(
@@ -227,12 +227,12 @@ MEMWB MEMWB(
 	.MemtoReg_i (EXMEM.MemtoReg_o),
     .ALUdata_i  (EXMEM.ALUdata_o),
 	.ReadData_i (Data_Memory.data_o),
-	.RegWaddr_i (EXMEM.RegWaddr_o),
+	.RDaddr_i (EXMEM.RDaddr_o),
 	.RegWrite_o (),
 	.MemtoReg_o (),
     .ALUdata_o  (),
 	.ReadData_o (),
-	.RegWaddr_o ()
+	.RDaddr_o ()
 );
 
 MUX32 MUX_MemtoReg(

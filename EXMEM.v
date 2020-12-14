@@ -8,14 +8,14 @@ module EXMEM
     MemWrite_i,
     ALUdata_i,
     MemWdata_i,
-    RegWaddr_i, 
+    RDaddr_i, 
     RegWrite_o,
     MemtoReg_o,
     MemRead_o,
     MemWrite_o,
     ALUdata_o,
 	MemWdata_o,
-    RegWaddr_o
+    RDaddr_o
 );
 
 input           clk_i,
@@ -26,21 +26,21 @@ input           clk_i,
                 MemWrite_i; 
 input [31:0]    ALUdata_i,
                 MemWdata_i;
-input [4:0]     RegWaddr_i;
+input [4:0]     RDaddr_i;
 output          RegWrite_o, 
                 MemtoReg_o, 
                 MemRead_o,
                 MemWrite_o; 
 output [31:0]   ALUdata_o,
                 MemWdata_o; 
-output [4:0]    RegWaddr_o;
+output [4:0]    RDaddr_o;
 reg             RegWrite_o,
                 MemtoReg_o, 
                 MemRead_o, 
                 MemWrite_o; 
 reg [31:0]      ALUdata_o,
                 MemWdata_o;
-reg [4:0]       RegWaddr_o;
+reg [4:0]       RDaddr_o;
 
 always @ ( posedge clk_i or negedge start_i) begin
 	if (~start_i) begin 
@@ -49,7 +49,7 @@ always @ ( posedge clk_i or negedge start_i) begin
 		MemRead_o <= 0;
 		MemWrite_o <= 0;
 		ALUdata_o <= 0;
-		RegWaddr_o <= 0;
+		RDaddr_o <= 0;
 		MemWdata_o <= 0;
 	end
 	else begin    
@@ -58,7 +58,7 @@ always @ ( posedge clk_i or negedge start_i) begin
 		MemRead_o <= MemRead_i;
 		MemWrite_o <= MemWrite_i;
 		ALUdata_o <= ALUdata_i;
-		RegWaddr_o <= RegWaddr_i;
+		RDaddr_o <= RDaddr_i;
 		MemWdata_o <= MemWdata_i;
 	end
 end
